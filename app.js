@@ -136,28 +136,24 @@ app.get('/shoes', checkAuthenticated, (req, res) => {
 
 // sorting
 app.get('/sort', checkAuthenticated, (req, res) => {
-    db.query('SELECT * FROM Product', (err, results) => {
-        if (err) throw err;
+    const allowedFields = ['price', 'size', 'quantity'];
+    const sortField = allowedFields.includes(req.query.field) ? req.query.field : 'price';
+    const sortOrder = req.query.order === 'desc' ? 'DESC' : 'ASC';
 
-        let shoes = results;
+    const sqlQuery = `SELECT * FROM Product ORDER BY ${sortField} ${sortOrder}`;
 
-        // sort price
-        if (req.query.sort === 'size') {
-            if (req.query.order === 'desc') {
-                shoes.sort((a, b) => Number(b.size) - Number(a.size));
-            } else {
-                shoes.sort((a, b) => Number(a.size) - Number(b.size));
-            }
-        } else {
-            // sort by price
-            if (req.query.order === 'desc') {
-                shoes.sort((a, b) => Number(b.price) - Number(a.price));
-            } else {
-                shoes.sort((a, b) => Number(a.price) - Number(b.price));
-            }
+    db.query(sqlQuery, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error retrieving products from the database.');
         }
 
-        res.render('sort', { shoes, user: req.session.user });
+        res.render('sort', {
+            shoes: results,
+            user: req.session.user,
+            sortField: sortField,
+            sortOrder: sortOrder
+        });
     });
 });
 
