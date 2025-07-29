@@ -134,6 +134,33 @@ app.get('/shoes', checkAuthenticated, (req, res) => {
     });
 });
 
+// sorting
+app.get('/sort', checkAuthenticated, (req, res) => {
+    db.query('SELECT * FROM Product', (err, results) => {
+        if (err) throw err;
+
+        let shoes = results;
+
+        // sort price
+        if (req.query.sort === 'size') {
+            if (req.query.order === 'desc') {
+                shoes.sort((a, b) => Number(b.size) - Number(a.size));
+            } else {
+                shoes.sort((a, b) => Number(a.size) - Number(b.size));
+            }
+        } else {
+            // sort by price
+            if (req.query.order === 'desc') {
+                shoes.sort((a, b) => Number(b.price) - Number(a.price));
+            } else {
+                shoes.sort((a, b) => Number(a.price) - Number(b.price));
+            }
+        }
+
+        res.render('sort', { shoes, user: req.session.user });
+    });
+});
+
 // Add Shoe page
 app.get('/addshoe', checkAdmin, (req, res) => {
   res.render('addshoe');
