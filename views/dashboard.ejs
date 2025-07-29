@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Sneaker Store</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shoes">Shoe List</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container mt-5 text-center">
+    <h1>Welcome, <%= user.username %>!</h1>
+    <p class="lead">This is your dashboard.</p>
+
+    <!-- Flash Messages -->
+    <% const safeMessages = messages || []; %>
+    <% if (safeMessages.length > 0) { %>
+        <div class="alert alert-info mt-3">
+            <% safeMessages.forEach(function(message) { %>
+                <p><%= message %></p>
+            <% }) %>
+        </div>
+    <% } %>
+
+    <!-- Role-Based Buttons -->
+    <div class="mt-4">
+        <% if (user.role === 'admin') { %>
+        <a href="/addshoe" class="btn btn-primary">Add Shoe</a>
+        <% } %>
+        <a href="/shoes" class="btn btn-primary">View Shoes</a>
+    </div>
+</div>
+
+</body>
+</html>
